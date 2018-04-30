@@ -442,7 +442,7 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
         }
 
         [Fact]
-        public async Task SendAsync_CallsAdd_OnResponseCache__WhenResult_CanBeCached()
+        public async Task SendAsync_CallsAdd_OnResponseCache_WhenResult_CanBeCached()
         {
             //Arrange
             var testHandler = new FakeDelegatingHttpHandler();
@@ -466,6 +466,73 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
 
             //Assert
             _mockResponseCache.Verify(c => c.Add(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TimeSpan>(), null), Times.Once);
+        }
+
+        [Fact]
+        public async Task SendAsync_CallsAdd_OnResponseCache_WhenPreviouslyCachedResponseHasExpired_AndNewResponseHas_NoEtag()
+        {
+            //Arrange
+            var testHandler = new FakeDelegatingHttpHandler();
+            var sut = new HttpCachingHandlerTestWrapper(_mockResponseCache.Object, testHandler);
+
+            var request = new HttpRequestMessage();
+            request.Method = HttpMethod.Get;
+            request.RequestUri = new Uri("http://www.tempuri.org/myresource");
+
+            var testResponse = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("My Example Reponse")
+            };
+            testResponse.Headers.CacheControl = new CacheControlHeaderValue { Private = true, MaxAge = TimeSpan.FromSeconds(60) };
+
+            testHandler.HttpResponseToReturn = testResponse;
+
+            _mockResponseCache.Setup(c => c.Exists(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
+                .Returns(true);
+
+            _mockResponseCache.Setup(c => c.IsExpired(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
+                .Returns(true);
+
+            //Act
+            await sut.SendAsync(request, new CancellationToken());
+
+            //Assert
+            _mockResponseCache.Verify(c => c.Add(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TimeSpan>(), null), Times.Once);
+        }
+
+        [Fact]
+        public async Task SendAsync_CallsAdd_OnResponseCache_WhenPreviouslyCachedResponseHasExpired_AndNewResponseHas_AnEtag()
+        {
+            //Arrange
+            var testHandler = new FakeDelegatingHttpHandler();
+            var sut = new HttpCachingHandlerTestWrapper(_mockResponseCache.Object, testHandler);
+
+            var request = new HttpRequestMessage();
+            request.Method = HttpMethod.Get;
+            request.RequestUri = new Uri("http://www.tempuri.org/myresource");
+
+            var testResponse = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("My Example Reponse")
+            };
+            testResponse.Headers.CacheControl = new CacheControlHeaderValue { Private = true, MaxAge = TimeSpan.FromSeconds(60) };
+            testResponse.Headers.ETag = new EntityTagHeaderValue("\"123456789\"");
+
+            testHandler.HttpResponseToReturn = testResponse;
+
+            _mockResponseCache.Setup(c => c.Exists(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
+                .Returns(true);
+
+            _mockResponseCache.Setup(c => c.IsExpired(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
+                .Returns(true);
+
+            //Act
+            await sut.SendAsync(request, new CancellationToken());
+
+            //Assert
+            _mockResponseCache.Verify(c => c.Add(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TimeSpan>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]

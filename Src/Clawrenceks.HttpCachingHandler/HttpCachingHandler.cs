@@ -42,7 +42,9 @@ namespace Clawrenceks.HttpCachingHandler
                     request.Headers.IfNoneMatch.TryParseAdd(eTag);
                 }
 
-                return await base.SendAsync(request, cancellationToken);
+                var response = await base.SendAsync(request, cancellationToken);
+                await ProcessResponseCaching(response);
+                return response;
             }
 
             var cachedResponse = _cache.Get(requestUrl);
