@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <DebugType>Full</DebugType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Authors>Chris Lawrence</Authors>
+    <Description>A HttpClient Handler providing a simple approach to determining if a response should be stored in a cache, or read from a cache</Description>
   </PropertyGroup>
 
 </Project>
