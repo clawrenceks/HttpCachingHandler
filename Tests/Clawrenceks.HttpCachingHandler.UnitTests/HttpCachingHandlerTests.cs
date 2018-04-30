@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Clawrenceks.HttpCachingHandler.Abstractions;
+using Moq;
 using System;
 using System.Linq;
 using System.Net;
