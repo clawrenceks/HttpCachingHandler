@@ -46,11 +46,10 @@ namespace Clawrenceks.HttpCachingHandler
             }
 
             var cachedResponse = _cache.Get(requestUrl);
-            var decodedCachedResponse = Convert.FromBase64String(cachedResponse);
 
             var httpResponse = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new ByteArrayContent(decodedCachedResponse)
+                Content = new StringContent(cachedResponse)
             };
 
             return httpResponse;           
@@ -73,15 +72,14 @@ namespace Clawrenceks.HttpCachingHandler
                 }
             }
 
-            var responseContent = await response.Content.ReadAsByteArrayAsync();
-            var base64Content = Convert.ToBase64String(responseContent);
+            var responseContent = await response.Content.ReadAsStringAsync();
 
             var maxAgeHeader = response.Headers.CacheControl.MaxAge.Value.TotalSeconds;
 
             var eTag = ParseReponseEtag(response);
 
             _cache.Add(requestUrl,
-                base64Content,
+                responseContent,
                 TimeSpan.FromSeconds(maxAgeHeader),
                 eTag);
         }
