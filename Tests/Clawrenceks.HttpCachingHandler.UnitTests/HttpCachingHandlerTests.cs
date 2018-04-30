@@ -154,7 +154,6 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
             var request = new HttpRequestMessage();
             request.Method = HttpMethod.Get;
             request.RequestUri = new Uri("http://www.tempuri.org/myresource");
-            request.Headers.CacheControl = new CacheControlHeaderValue();
 
             _mockResponseCache.Setup(c => c.Exists(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
                 .Returns(true);
@@ -179,7 +178,6 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
             var request = new HttpRequestMessage();
             request.Method = HttpMethod.Get;
             request.RequestUri = new Uri("http://www.tempuri.org/myresource");
-            request.Headers.CacheControl = new CacheControlHeaderValue();
 
             _mockResponseCache.Setup(c => c.Exists(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
                 .Returns(true);
@@ -208,7 +206,6 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
             var request = new HttpRequestMessage();
             request.Method = HttpMethod.Get;
             request.RequestUri = new Uri("http://www.tempuri.org/myresource");
-            request.Headers.CacheControl = new CacheControlHeaderValue();
 
             _mockResponseCache.Setup(c => c.Exists(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
                 .Returns(true);
@@ -236,7 +233,6 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
             var request = new HttpRequestMessage();
             request.Method = HttpMethod.Get;
             request.RequestUri = new Uri("http://www.tempuri.org/myresource");
-            request.Headers.CacheControl = new CacheControlHeaderValue();
 
             _mockResponseCache.Setup(c => c.Exists(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
                 .Returns(true);
@@ -264,7 +260,6 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
             var request = new HttpRequestMessage();
             request.Method = HttpMethod.Get;
             request.RequestUri = new Uri("http://www.tempuri.org/myresource");
-            request.Headers.CacheControl = new CacheControlHeaderValue();
 
             _mockResponseCache.Setup(c => c.Exists(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
                 .Returns(true);
@@ -292,7 +287,6 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
             var request = new HttpRequestMessage();
             request.Method = HttpMethod.Get;
             request.RequestUri = new Uri("http://www.tempuri.org/myresource");
-            request.Headers.CacheControl = new CacheControlHeaderValue();
 
             _mockResponseCache.Setup(c => c.Exists(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
                 .Returns(true);

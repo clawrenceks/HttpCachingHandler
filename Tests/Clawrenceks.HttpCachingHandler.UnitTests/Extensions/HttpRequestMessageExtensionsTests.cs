@@ -8,13 +8,13 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests.Extensions
     public class HttpRequestMessageExtensionsTests
     {
         [Fact]
-        public void ShouldBypassPrivateCache_ReturnsTrue_WhenRequestMessage_ContainsNoCacheControlHeaders()
+        public void ShouldBypassPrivateCache_ReturnsFalse_WhenRequestMessage_ContainsNoCacheControlHeaders()
         {
             //Arrange
             var request = new HttpRequestMessage();
 
             //Assert
-            Assert.True(request.ShouldBypassPrivateCache());
+            Assert.False(request.ShouldBypassPrivateCache());
         }
 
         [Fact]
