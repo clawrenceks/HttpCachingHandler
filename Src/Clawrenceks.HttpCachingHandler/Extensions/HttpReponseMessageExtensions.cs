@@ -17,7 +17,7 @@ namespace Clawrenceks.HttpCachingHandler.Extensions
             if (!response?.Headers?.CacheControl?.MaxAge.HasValue == true)
                 return false;
 
-            if (response.Headers.CacheControl.MaxAge.Value.TotalSeconds == 0)
+            if (response.Headers.CacheControl.MaxAge.Value.TotalSeconds < 1)
                 return false;
 
             if (response.StatusCode != HttpStatusCode.OK &&

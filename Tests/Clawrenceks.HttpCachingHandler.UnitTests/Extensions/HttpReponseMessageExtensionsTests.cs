@@ -42,11 +42,11 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests.Extensions
         }
 
         [Fact]
-        public void IsPrivatelyCachable_ReturnsFalse_GivenHttpResponse_WithCacheControlHeader_ContainingMaxAgeOfZero()
+        public void IsPrivatelyCachable_ReturnsFalse_GivenHttpResponse_WithCacheControlHeader_ContainingMaxAge_ThatIsLessThanOne()
         {
             //Arrange
             var response = new HttpResponseMessage();
-            response.Headers.CacheControl = new CacheControlHeaderValue { MaxAge = TimeSpan.FromSeconds(0) };
+            response.Headers.CacheControl = new CacheControlHeaderValue { MaxAge = TimeSpan.FromSeconds(0.5) };
 
             //Assert
             Assert.False(response.IsPrivatelyCachable());
