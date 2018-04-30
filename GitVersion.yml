@@ -1,0 +1,28 @@
+mode: Mainline
+commit-message-incrementing: MergeMessageOnly
+next-version: 0.0.1
+branches:
+  feature:
+    regex: feature(s)?[/-]
+    mode: ContinuousDeployment
+    tag: useBranchName
+    increment: None
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+  pull-request:
+    regex: (pull|pull\-requests|pr)[/-]
+    mode: ContinuousDeployment
+    tag: PullRequest
+    increment: None
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    track-merge-target: false
+  hotfix:
+    regex: (hotfix(es)?|config)[/-]
+    mode: ContinuousDeployment
+    tag: useBranchName
+    increment: None
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+ignore:
+  sha: []
