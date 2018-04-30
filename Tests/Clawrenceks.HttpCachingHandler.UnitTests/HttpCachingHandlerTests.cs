@@ -242,7 +242,7 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
                 .Returns(false);
 
             _mockResponseCache.Setup(c => c.Get(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
-                .Returns(Convert.ToBase64String(Encoding.ASCII.GetBytes("My cached response content")));
+                .Returns("My cached response content");
 
             //Act
             await sut.SendAsync(request, new CancellationToken());
@@ -269,7 +269,7 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
                 .Returns(false);
 
             _mockResponseCache.Setup(c => c.Get(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
-                .Returns(Convert.ToBase64String(Encoding.ASCII.GetBytes("My cached response content")));
+                .Returns("My cached response content");
 
             //Act
             var result = await sut.SendAsync(request, new CancellationToken());
@@ -296,7 +296,7 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
                 .Returns(false);
 
             _mockResponseCache.Setup(c => c.Get(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
-                .Returns(Convert.ToBase64String(Encoding.ASCII.GetBytes("My cached response content")));
+                .Returns("My cached response content");
 
             //Act
             var result = await sut.SendAsync(request, new CancellationToken());
@@ -586,9 +586,7 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
             await sut.SendAsync(request, new CancellationToken());
 
             //Assert
-            var contentBytes = Encoding.ASCII.GetBytes("My Example Reponse");
-            var encodedContent = Convert.ToBase64String(contentBytes);
-            _mockResponseCache.Verify(c => c.Add(It.IsAny<string>(), It.Is<string>(s => s == encodedContent), It.IsAny<TimeSpan>(), null), Times.Once);
+            _mockResponseCache.Verify(c => c.Add(It.IsAny<string>(), It.Is<string>(s => s == "My Example Reponse"), It.IsAny<TimeSpan>(), null), Times.Once);
         }
 
         [Fact]
