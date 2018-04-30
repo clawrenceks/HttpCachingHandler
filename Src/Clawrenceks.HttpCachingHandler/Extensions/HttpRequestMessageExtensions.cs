@@ -7,9 +7,6 @@ namespace Clawrenceks.HttpCachingHandler.Extensions
     {
         public static bool ShouldBypassPrivateCache(this HttpRequestMessage request)
         {
-            if (request?.Headers?.CacheControl == null)
-                return true;
-
             if (request?.Headers?.CacheControl?.NoCache == true)
             return true;
 
