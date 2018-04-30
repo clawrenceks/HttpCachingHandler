@@ -8,4 +8,8 @@
     <Description>A HttpClient Handler providing a simple approach to determining if a response should be stored in a cache, or read from a cache</Description>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Clawrenceks.HttpCachingHandler.Abstractions\Clawrenceks.HttpCachingHandler.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>

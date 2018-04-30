@@ -1,4 +1,5 @@
-﻿using Clawrenceks.HttpCachingHandler.Extensions;
+﻿using Clawrenceks.HttpCachingHandler.Abstractions;
+using Clawrenceks.HttpCachingHandler.Extensions;
 using System;
 using System.Net;
 using System.Net.Http;
