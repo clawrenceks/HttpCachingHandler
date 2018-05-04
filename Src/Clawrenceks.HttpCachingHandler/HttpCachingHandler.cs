@@ -44,6 +44,12 @@ namespace Clawrenceks.HttpCachingHandler
 
                 var response = await base.SendAsync(request, cancellationToken);
                 await ProcessResponseCaching(response);
+                
+                if (response.StatusCode == HttpStatusCode.NotModified)
+                {
+                    response.StatusCode = HttpStatusCode.OK;
+                }
+
                 return response;
             }
 
