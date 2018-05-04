@@ -162,6 +162,8 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
             _mockResponseCache.Setup(c => c.IsExpired(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
                 .Returns(true);
 
+            testHandler.HttpResponseToReturn = new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
+
             //Act
             await sut.SendAsync(request, new CancellationToken());
 
@@ -188,6 +190,9 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
 
             _mockResponseCache.Setup(c => c.GetETag(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
                 .Returns("\"123\"");
+
+            testHandler.HttpResponseToReturn = new HttpResponseMessage { StatusCode = HttpStatusCode.NotModified };
+
 
             //Act
             await sut.SendAsync(request, new CancellationToken());
@@ -216,6 +221,8 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
 
             _mockResponseCache.Setup(c => c.GetETag(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
                 .Returns(() => null);
+
+            testHandler.HttpResponseToReturn = new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
 
             //Act
             await sut.SendAsync(request, new CancellationToken());
@@ -669,6 +676,44 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
 
             //Assert
             _mockResponseCache.Verify(c => c.Add(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TimeSpan>(), It.Is<string>(s => s == "\"123456789\"")), Times.Once);
+        }
+
+        [Fact]
+        public async Task SendAsync_ReturnsResponse_WithStatusCode200_WhenIfNoneMatchedRequest_ReturnsReponseCode_WithStatusCode304()
+        {
+            //Arrange
+            var testHandler = new FakeDelegatingHttpHandler();
+            var sut = new HttpCachingHandlerTestWrapper(_mockResponseCache.Object, testHandler);
+
+            var request = new HttpRequestMessage();
+            request.Method = HttpMethod.Get;
+            request.RequestUri = new Uri("http://www.tempuri.org/myresource");
+
+            _mockResponseCache.Setup(c => c.Get(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
+                .Returns("My Cached Response");
+
+            _mockResponseCache.Setup(c => c.Exists(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
+                .Returns(true);
+
+            _mockResponseCache.Setup(c => c.IsExpired(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
+                .Returns(true);
+
+            _mockResponseCache.Setup(c => c.GetETag(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
+                .Returns("\"123\"");
+
+            var testResponse = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.NotModified
+            };
+            testResponse.Headers.CacheControl = new CacheControlHeaderValue { Private = true, MaxAge = TimeSpan.FromSeconds(60) };
+
+            testHandler.HttpResponseToReturn = testResponse;
+
+            //Act
+            var result = await sut.SendAsync(request, new CancellationToken());
+
+            //Assert
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
     }
 }
