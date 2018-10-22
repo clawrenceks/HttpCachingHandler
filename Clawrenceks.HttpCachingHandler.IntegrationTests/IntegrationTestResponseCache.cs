@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
+using System.Net;
 using System.Text;
 
 namespace Clawrenceks.HttpCachingHandler.IntegrationTests
@@ -29,6 +30,8 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
 
         public void Add(string key, string data, TimeSpan expireIn, string eTag = null)
         {
+            key = UrlEncodeString(key);
+
             if (Exists(key))
             {
                 throw new InvalidOperationException($"An item with {nameof(key)} {key} already exists in the cache.");
@@ -109,12 +112,14 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
 
         public bool Exists(string key)
         {
+            key = UrlEncodeString(key);
             var cachedItemPath = Path.Combine(CacheLocation, key);
             return File.Exists(cachedItemPath);
         }
 
         public string Get(string key)
         {
+            key = UrlEncodeString(key);
             if (!Exists(key))
             {
                 throw new InvalidOperationException($"No item with {nameof(key)} {key} exists in the cache.");
@@ -126,6 +131,7 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
 
         public string GetETag(string key)
         {
+            key = UrlEncodeString(key);
             if (!Exists(key))
             {
                 throw new InvalidOperationException($"No item with {nameof(key)} {key} exists in the cache.");
@@ -137,6 +143,7 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
 
         public DateTime? GetExpiration(string key)
         {
+            key = UrlEncodeString(key);
             if (!Exists(key))
             {
                 throw new InvalidOperationException($"No item with {nameof(key)} {key} exists in the cache.");
@@ -148,6 +155,7 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
 
         public bool IsExpired(string key)
         {
+            key = UrlEncodeString(key);
             if (!Exists(key))
             {
                 throw new InvalidOperationException($"No item with {nameof(key)} {key} exists in the cache.");
@@ -162,6 +170,14 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
             var cachedItemContent = File.ReadAllText(Path.Combine(CacheLocation, key));
             var cachedReponse = JsonConvert.DeserializeObject<CachedResponse>(cachedItemContent);
             return cachedReponse;
+        }
+
+        private string UrlEncodeString(string value)
+        {
+            //The value is first decoded here, to handle the scenario where 
+            //a fully or partially encoded Url might have already been passed in as the key.
+            var decodedUrl = WebUtility.UrlDecode(value);
+            return WebUtility.UrlEncode(decodedUrl);
         }
     }
 }

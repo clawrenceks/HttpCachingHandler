@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -50,6 +51,21 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
 
             //Act
             var result = _sut.Exists("my-test-cache-item");
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void Exists_ReturnsTrue_GivenUrlAsKey_WhenCacheContainsItem_WithEncodedUrl_AsFilename()
+        {
+            //Arrange
+            var cacheItemLocation = Path.Combine(_sut.CacheLocation, WebUtility.UrlEncode("http://my-test-cache-item"));
+            var cachedItem = File.Create(cacheItemLocation);
+            cachedItem.Close();
+
+            //Act
+            var result = _sut.Exists("http://my-test-cache-item");
 
             //Assert
             Assert.True(result);
@@ -189,6 +205,16 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
         }
 
         [Fact]
+        public void Add_UrlEncodesKey_WhenAddingItem_ToCache()
+        {
+            //Act
+            _sut.Add("http://my-url/my-cache-item", "my-cache-item-content", new TimeSpan(10, 0, 0, 0));
+
+            //Assert
+            Assert.True(File.Exists(Path.Combine(_sut.CacheLocation, WebUtility.UrlEncode("http://my-url/my-cache-item"))));
+        }
+
+        [Fact]
         public void Get_ThrowsInvalidOperationException_GivenKey_WhichDoesNotExist_InCache()
         {
             //Act & Assert
@@ -204,6 +230,19 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
 
             //Act
             var result = _sut.Get("my-test-cache-item");
+
+            //Assert
+            Assert.Equal("my-test-cache-content", result);
+        }
+
+        [Fact]
+        public void Get_ReturnsCorrectResult_GivenUrl_AsKey()
+        {
+            //Arrange
+            _sut.Add("http://my-test-cache-item/my-item?query=test", "my-test-cache-content", DateTime.Now.AddHours(2).TimeOfDay);
+
+            //Act
+            var result = _sut.Get("http://my-test-cache-item/my-item?query=test");
 
             //Assert
             Assert.Equal("my-test-cache-content", result);
@@ -234,11 +273,23 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
         private void GetEtag_ReturnsCorrectEtag_GivenKey_OfItem_ThatHasAnEtag()
         {
             //Arrange
-            _sut.EmptyAll();
             _sut.Add("my-new-cache-item", "my-cache-date", DateTime.Now.AddHours(1).TimeOfDay, "my-test-etag");
 
             //Act
             var result = _sut.GetETag("my-new-cache-item");
+
+            //Assert
+            Assert.Equal("my-test-etag", result);
+        }
+
+        [Fact]
+        private void GetEtag_ReturnsCorrectEtag_GivenUrl_AsKey()
+        {
+            //Arrange
+            _sut.Add("http://www.my-item-to-cache", "my-cache-date", DateTime.Now.AddHours(1).TimeOfDay, "my-test-etag");
+
+            //Act
+            var result = _sut.GetETag("http://www.my-item-to-cache");
 
             //Assert
             Assert.Equal("my-test-etag", result);
@@ -272,6 +323,25 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
         }
 
         [Fact]
+        public void GetExpiration_ReturnsCorrectDate_GivenUrl_AsKey()
+        {
+            //Arrange
+            var expiryDate = DateTime.Now.AddDays(15);
+
+            var cachedResponse = new CachedResponse("my-test-cached-response", expiryDate);
+            var serializedResponse = JsonConvert.SerializeObject(cachedResponse);
+            var cachedItem = File.Create(Path.Combine(_sut.CacheLocation, WebUtility.UrlEncode("my-test-cached-item")));
+            cachedItem.Write(Encoding.ASCII.GetBytes(serializedResponse));
+            cachedItem.Close();
+
+            //Act
+            var result = _sut.GetExpiration("my-test-cached-item");
+
+            //Assert
+            Assert.Equal(result, expiryDate);
+        }
+
+        [Fact]
         public void IsExpired_Throws_InvalidOperationException_GivenKey_WhichDoesNot_ExistInCache()
         {
             //Act & Assert
@@ -288,6 +358,20 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
 
             //Act
             var result = _sut.IsExpired("my-new-cache-item");
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void IsExpired_ReturnsTrue_GivenUrl_AsKey()
+        {
+            //Arrange
+            var expiry = DateTime.Now.AddDays(-2) - DateTime.Now;
+            _sut.Add("https://my-new-cache-item", "my-cache-date", expiry);
+
+            //Act
+            var result = _sut.IsExpired("https://my-new-cache-item");
 
             //Assert
             Assert.True(result);
