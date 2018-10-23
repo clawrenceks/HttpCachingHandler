@@ -248,8 +248,11 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
             _mockResponseCache.Setup(c => c.IsExpired(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
                 .Returns(false);
 
+            var bytes = Encoding.UTF8.GetBytes("My cached response content");
+            var cacheContent = Convert.ToBase64String(bytes);
+
             _mockResponseCache.Setup(c => c.Get(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
-                .Returns("My cached response content");
+                .Returns(cacheContent);
 
             //Act
             await sut.SendAsync(request, new CancellationToken());
@@ -275,8 +278,11 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
             _mockResponseCache.Setup(c => c.IsExpired(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
                 .Returns(false);
 
+            var bytes = Encoding.UTF8.GetBytes("My cached response content");
+            var cacheContent = Convert.ToBase64String(bytes);
+
             _mockResponseCache.Setup(c => c.Get(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
-                .Returns("My cached response content");
+                .Returns(cacheContent);
 
             //Act
             var result = await sut.SendAsync(request, new CancellationToken());
@@ -302,8 +308,11 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
             _mockResponseCache.Setup(c => c.IsExpired(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
                 .Returns(false);
 
+            var bytes = Encoding.UTF8.GetBytes("My cached response content");
+            var cacheContent = Convert.ToBase64String(bytes);
+
             _mockResponseCache.Setup(c => c.Get(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
-                .Returns("My cached response content");
+                .Returns(cacheContent);
 
             //Act
             var result = await sut.SendAsync(request, new CancellationToken());
@@ -430,8 +439,12 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
             request.Method = HttpMethod.Get;
             request.RequestUri = new Uri("http://www.tempuri.org/myresource");
 
+            var cachedContent = "My Cached Response";
+            var bytes = Encoding.UTF8.GetBytes(cachedContent);
+            var base64EncodedCacheContent = Convert.ToBase64String(bytes);
+
             _mockResponseCache.Setup(c => c.Get(It.Is<string>(s => s == request.RequestUri.AbsoluteUri)))
-                .Returns("My Cached Response");
+                .Returns(base64EncodedCacheContent);
 
             var testResponse = new HttpResponseMessage
             {
@@ -570,7 +583,7 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
         }
 
         [Fact]
-        public async Task SendAsync_PassesCorrectResponseContent_ToCache_WhenResult_CanBeCached()
+        public async Task SendAsync_Passes_ResponseContent_AsBase64String_ToCache_WhenResult_CanBeCached()
         {
             //Arrange
             var testHandler = new FakeDelegatingHttpHandler();
@@ -593,7 +606,9 @@ namespace Clawrenceks.HttpCachingHandler.UnitTests
             await sut.SendAsync(request, new CancellationToken());
 
             //Assert
-            _mockResponseCache.Verify(c => c.Add(It.IsAny<string>(), It.Is<string>(s => s == "My Example Reponse"), It.IsAny<TimeSpan>(), null), Times.Once);
+            var bytes = Encoding.UTF8.GetBytes("My Example Reponse");
+            var expectedContent = System.Convert.ToBase64String(bytes);
+            _mockResponseCache.Verify(c => c.Add(It.IsAny<string>(), It.Is<string>(s => s == expectedContent), It.IsAny<TimeSpan>(), null), Times.Once);
         }
 
         [Fact]

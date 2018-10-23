@@ -1,0 +1,227 @@
+﻿[
+  {
+    "_id": "5bcdf050b9b1d456866992fd",
+    "index": 0,
+    "guid": "ad3347a7-d7cc-4622-aa4e-4f9291ce9c5f",
+    "isActive": true,
+    "balance": "$3,046.68",
+    "picture": "http://placehold.it/32x32",
+    "age": 37,
+    "eyeColor": "brown",
+    "name": "Goldie Rodriguez",
+    "gender": "female",
+    "company": "FLEXIGEN",
+    "email": "goldierodriguez@flexigen.com",
+    "phone": "+1 (801) 479-2350",
+    "address": "358 Newkirk Placez, Cleary, Arizona, 732",
+    "about": "Non sint nulla adipisicing exercitation nulla. Et reprehenderit non eiusmod id duis in. Irure amet magna sint velit adipisicing laborum occaecat. Eu dolore sunt amet excepteur adipisicing proident dolore esse officia aute. Non quis do esse sint exercitation consectetur sint eu. Laborum ea eu esse voluptate.\r\n",
+    "registered": "2014-05-16T05:15:30 +04:00",
+    "latitude": 76.566899,
+    "longitude": 162.012292,
+    "tags": [
+      "aute",
+      "commodo",
+      "velit",
+      "culpa",
+      "ullamco",
+      "aliqua",
+      "consequat"
+    ],
+    "friends": [
+      {
+        "id": 0,
+        "name": "Hudson Stout"
+      },
+      {
+        "id": 1,
+        "name": "Delaney Finch"
+      },
+      {
+        "id": 2,
+        "name": "Harriett Bean"
+      }
+    ],
+    "greeting": "Hello, Goldie Rodriguez! You have 9 unread messages.",
+    "favoriteFruit": "apple"
+  },
+  {
+    "_id": "5bcdf050031edfa715249068",
+    "index": 1,
+    "guid": "4fe7daef-30a4-4b52-9473-266143c8d389",
+    "isActive": true,
+    "balance": "$2,044.30",
+    "picture": "http://placehold.it/32x32",
+    "age": 24,
+    "eyeColor": "brown",
+    "name": "Andrews Kirk",
+    "gender": "male",
+    "company": "BEDDER",
+    "email": "andrewskirk@bedder.com",
+    "phone": "+1 (932) 563-2378",
+    "address": "591 Vanderbilt Street, Marbury, South Dakota, 7195",
+    "about": "Nulla velit et non magna. Excepteur ex reprehenderit nisi commodo deserunt aliqua officia. Occaecat incididunt ea occaecat sunt.\r\n",
+    "registered": "2016-11-30T01:22:36 +03:00",
+    "latitude": 43.650048,
+    "longitude": 48.745929,
+    "tags": [
+      "velit",
+      "qui",
+      "reprehenderit",
+      "exercitation",
+      "cillum",
+      "duis",
+      "cillum"
+    ],
+    "friends": [
+      {
+        "id": 0,
+        "name": "Zimmerman Jimenez"
+      },
+      {
+        "id": 1,
+        "name": "Fleming Thornton"
+      },
+      {
+        "id": 2,
+        "name": "Claudine Perry"
+      }
+    ],
+    "greeting": "Hello, Andrews Kirk! You have 4 unread messages.",
+    "favoriteFruit": "strawberry"
+  },
+  {
+    "_id": "5bcdf0504269f6291350c330",
+    "index": 2,
+    "guid": "f6e50aa6-4070-427a-86d8-2d34e3a959c1",
+    "isActive": true,
+    "balance": "$2,186.70",
+    "picture": "http://placehold.it/32x32",
+    "age": 27,
+    "eyeColor": "brown",
+    "name": "Petty Atkins",
+    "gender": "male",
+    "company": "OTHERSIDE",
+    "email": "pettyatkins@otherside.com",
+    "phone": "+1 (810) 559-2862",
+    "address": "358 Cadman Plaza, Wakarusa, Minnesota, 6679",
+    "about": "Veniam exercitation sunt ullamco quis deserunt exercitation. Consequat labore proident exercitation velit ad mollit eiusmod nulla veniam ullamco sunt. Excepteur enim consequat Lorem elit eu veniam do.\r\n",
+    "registered": "2017-05-27T04:43:14 +04:00",
+    "latitude": -45.736326,
+    "longitude": -179.512248,
+    "tags": [
+      "sint",
+      "velit",
+      "ad",
+      "Lorem",
+      "veniam",
+      "laboris",
+      "ea"
+    ],
+    "friends": [
+      {
+        "id": 0,
+        "name": "Reid Humphrey"
+      },
+      {
+        "id": 1,
+        "name": "Elaine Hines"
+      },
+      {
+        "id": 2,
+        "name": "Lawson Kinney"
+      }
+    ],
+    "greeting": "Hello, Petty Atkins! You have 3 unread messages.",
+    "favoriteFruit": "apple"
+  },
+  {
+    "_id": "5bcdf050e1576e8342c2c2ae",
+    "index": 3,
+    "guid": "97f19dfe-ebe1-4086-a8aa-e6f7e267012e",
+    "isActive": true,
+    "balance": "$3,182.51",
+    "picture": "http://placehold.it/32x32",
+    "age": 33,
+    "eyeColor": "blue",
+    "name": "Austin Snyder",
+    "gender": "male",
+    "company": "ZIPAK",
+    "email": "austinsnyder@zipak.com",
+    "phone": "+1 (823) 472-2704",
+    "address": "169 Robert Street, Cazadero, West Virginia, 5938",
+    "about": "Qui ipsum mollit proident dolore deserunt fugiat enim. Consequat enim dolore dolor proident eiusmod ipsum esse fugiat officia. Adipisicing consectetur quis in aliqua labore sit exercitation pariatur aute magna officia. Commodo exercitation occaecat dolor dolor pariatur ullamco Lorem deserunt. Est dolore laboris irure reprehenderit dolore non officia id culpa labore sit et. Enim velit fugiat anim nulla elit nulla cupidatat officia amet. Enim adipisicing do sint minim id ipsum exercitation occaecat.\r\n",
+    "registered": "2015-11-10T09:07:47 +03:00",
+    "latitude": 31.119589,
+    "longitude": 13.672152,
+    "tags": [
+      "proident",
+      "deserunt",
+      "exercitation",
+      "ut",
+      "anim",
+      "nulla",
+      "enim"
+    ],
+    "friends": [
+      {
+        "id": 0,
+        "name": "Lesley Delacruz"
+      },
+      {
+        "id": 1,
+        "name": "Vonda Cook"
+      },
+      {
+        "id": 2,
+        "name": "Paulette Sampson"
+      }
+    ],
+    "greeting": "Hello, Austin Snyder! You have 6 unread messages.",
+    "favoriteFruit": "apple"
+  },
+  {
+    "_id": "5bcdf050a90863a077599e3e",
+    "index": 4,
+    "guid": "a32f8ff7-71bd-4fe3-834e-1c3682ed016a",
+    "isActive": true,
+    "balance": "$3,297.77",
+    "picture": "http://placehold.it/32x32",
+    "age": 21,
+    "eyeColor": "green",
+    "name": "Villarreal Mays",
+    "gender": "male",
+    "company": "VIASIA",
+    "email": "villarrealmays@viasia.com",
+    "phone": "+1 (931) 503-3958",
+    "address": "138 Buffalo Avenue, Beaulieu, Northern Mariana Islands, 3374",
+    "about": "Minim ipsum non fugiat non nostrud pariatur magna. Tempor ullamco nisi excepteur nulla cillum aliquip exercitation sint qui ex commodo in culpa. Adipisicing dolore dolore veniam nulla irure. Laborum tempor minim veniam sit do velit ut ipsum aliquip nisi eu cupidatat veniam sit. Lorem qui voluptate nisi duis elit aliquip. Fugiat Lorem magna ex dolor nostrud sit anim anim voluptate est.\r\n",
+    "registered": "2015-06-11T01:15:37 +03:00",
+    "latitude": 87.52392,
+    "longitude": -18.730007,
+    "tags": [
+      "consequat",
+      "reprehenderit",
+      "duis",
+      "ullamco",
+      "officia",
+      "nulla",
+      "sint"
+    ],
+    "friends": [
+      {
+        "id": 0,
+        "name": "Kayla Watson"
+      },
+      {
+        "id": 1,
+        "name": "Sharon Banks"
+      },
+      {
+        "id": 2,
+        "name": "Weber Hays"
+      }
+    ],
+    "greeting": "Hello, Villarreal Mays! You have 9 unread messages.",
+    "favoriteFruit": "banana"
+  }
+]

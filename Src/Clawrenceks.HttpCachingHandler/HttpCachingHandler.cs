@@ -1,6 +1,7 @@
 ﻿using Clawrenceks.HttpCachingHandler.Abstractions;
 using Clawrenceks.HttpCachingHandler.Extensions;
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -28,7 +29,7 @@ namespace Clawrenceks.HttpCachingHandler
             if (BypassPrivateCache(request))
             {
                 var response = await base.SendAsync(request, cancellationToken);
-                await ProcessResponseCaching(response);
+                response = await ProcessResponseCaching(response);
                 return response;
             }
 
@@ -43,7 +44,7 @@ namespace Clawrenceks.HttpCachingHandler
                 }
 
                 var response = await base.SendAsync(request, cancellationToken);
-                await ProcessResponseCaching(response);
+                response = await ProcessResponseCaching(response);
                 
                 if (response.StatusCode == HttpStatusCode.NotModified)
                 {
@@ -55,18 +56,22 @@ namespace Clawrenceks.HttpCachingHandler
 
             var cachedResponse = _cache.Get(requestUrl);
 
+            var bytes = Convert.FromBase64String(cachedResponse);
+
+
             var httpResponse = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new StringContent(cachedResponse)
+                //Content = new StringContent(cachedResponse)
+                Content = new StreamContent(new MemoryStream(bytes))
             };
 
             return httpResponse;           
         }
 
-        private async Task ProcessResponseCaching(HttpResponseMessage response)
+        private async Task<HttpResponseMessage> ProcessResponseCaching(HttpResponseMessage response)
         {
             if (!ResponseIsCachable(response))
-                return;
+                return response;
             
             var requestUrl = response.RequestMessage.RequestUri.AbsoluteUri;
 
@@ -76,20 +81,33 @@ namespace Clawrenceks.HttpCachingHandler
 
                 if (cachedReponse != null)
                 {
-                    response.Content = new StringContent(cachedReponse);
+                    var base64DecodedContent = Convert.FromBase64String(cachedReponse);
+                    var stream = new MemoryStream(base64DecodedContent);
+
+                    response.Content = new StreamContent(stream);
                 }
             }
 
-            var responseContent = await response.Content.ReadAsStringAsync();
+            var memoryStream = new MemoryStream();
+            var responseStream = await response.Content.ReadAsStreamAsync();
+            responseStream.CopyTo(memoryStream);
+
+            var bytes = memoryStream.ToArray();
+            var base64EncodedContent = Convert.ToBase64String(bytes);
 
             var maxAgeHeader = response.Headers.CacheControl.MaxAge.Value.TotalSeconds;
 
             var eTag = ParseReponseEtag(response);
 
             _cache.Add(requestUrl,
-                responseContent,
+                base64EncodedContent,
                 TimeSpan.FromSeconds(maxAgeHeader),
                 eTag);
+
+            memoryStream.Position = 0;
+            response.Content = new StreamContent(memoryStream);
+            responseStream.Dispose();
+            return response;
         }
 
         private string ParseReponseEtag(HttpResponseMessage response)
