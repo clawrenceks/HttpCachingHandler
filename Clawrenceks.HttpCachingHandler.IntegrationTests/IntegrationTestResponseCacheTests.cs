@@ -9,13 +9,18 @@ using Xunit;
 
 namespace Clawrenceks.HttpCachingHandler.IntegrationTests
 {
-    public class IntegrationTestResponseCacheTests
+    public class IntegrationTestResponseCacheTests : IDisposable
     {
         private readonly IntegrationTestResponseCache _sut;
 
         public IntegrationTestResponseCacheTests()
         {
             _sut = new IntegrationTestResponseCache();
+        }
+
+        public void Dispose()
+        {
+            _sut.DeleteCache();
         }
 
         [Fact]
@@ -106,17 +111,6 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
 
             //Assert
             Assert.True(File.Exists(Path.Combine(_sut.CacheLocation, "my-new-cache-item")));
-        }
-
-        [Fact]
-        public void Add_ThrowsInvalidOperationException_WhenItemWithSameKey_AlreadyExists_InCache()
-        {
-            //Arrange
-            _sut.Add("my-cache-item", "my-cache-item-content", DateTime.Now.AddDays(10).TimeOfDay);
-
-            //Act & Assert
-            var exception = Assert.Throws<InvalidOperationException>(() => _sut.Add("my-cache-item", "my-cache-item-content", DateTime.Now.AddDays(10).TimeOfDay));
-            Assert.Contains("already exists", exception.Message);
         }
 
         [Fact]
@@ -212,6 +206,64 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
 
             //Assert
             Assert.True(File.Exists(Path.Combine(_sut.CacheLocation, WebUtility.UrlEncode("http://my-url/my-cache-item"))));
+        }
+
+        [Fact]
+        public void Add_Overwrites_CacheContent_WhenAnItem_WithTheSameKey_AlreadyExists_InCache()
+        {
+            //Arrange
+            _sut.Add("my-cache-item", "my-cache-item-content", new TimeSpan(10, 0, 0, 0), "my-test-etag-value");
+
+            //Act
+            _sut.Add("my-cache-item", "my-updated-cache-content", new TimeSpan(20, 0, 0, 0), "my-new-etag-value");
+
+            //Assert
+            Assert.Equal("my-updated-cache-content", _sut.Get("my-cache-item"));
+        }
+
+        [Fact]
+        public async Task Add_Overwrites_ExpiryDate_WhenAnItem_WithTheSameKey_AlreadyExists_InCache()
+        {
+            //Arrange
+            _sut.Add("my-cache-item", "my-cache-item-content", new TimeSpan(10, 0, 0, 0), "my-test-etag-value");
+
+            //Act
+            _sut.Add("my-cache-item", "my-updated-cache-content", new TimeSpan(20, 0, 0, 0), "my-new-etag-value");
+
+            //Assert
+            var cachedItemContent = await File.ReadAllTextAsync(Path.Combine(_sut.CacheLocation, "my-cache-item"));
+            var cachedItem = JsonConvert.DeserializeObject<CachedResponse>(cachedItemContent);
+            Assert.Equal(DateTime.Now.AddDays(20).Date, cachedItem.ExpiryDate.Date);
+        }
+
+        [Fact]
+        public async Task Add_Overwrites_Etag_WhenAnItem_WithTheSameKey_AlreadyExists_InCache_AndNewEtag_IsNull()
+        {
+            //Arrange
+            _sut.Add("my-cache-item", "my-cache-item-content", new TimeSpan(10, 0, 0, 0), "my-test-etag-value");
+
+            //Act
+            _sut.Add("my-cache-item", "my-updated-cache-content", new TimeSpan(20, 0, 0, 0));
+
+            //Assert
+            var cachedItemContent = await File.ReadAllTextAsync(Path.Combine(_sut.CacheLocation, "my-cache-item"));
+            var cachedItem = JsonConvert.DeserializeObject<CachedResponse>(cachedItemContent);
+            Assert.Null(cachedItem.Etag);
+        }
+
+        [Fact]
+        public async Task Add_Overwrites_Etag_WhenAnItem_WithTheSameKey_AlreadyExists_InCache_AndNewEtag_IsNotNull()
+        {
+            //Arrange
+            _sut.Add("my-cache-item", "my-cache-item-content", new TimeSpan(10, 0, 0, 0), "my-test-etag-value");
+
+            //Act
+            _sut.Add("my-cache-item", "my-updated-cache-content", new TimeSpan(20, 0, 0, 0),"my-new-etag-value");
+
+            //Assert
+            var cachedItemContent = await File.ReadAllTextAsync(Path.Combine(_sut.CacheLocation, "my-cache-item"));
+            var cachedItem = JsonConvert.DeserializeObject<CachedResponse>(cachedItemContent);
+            Assert.Equal("my-new-etag-value", cachedItem.Etag);
         }
 
         [Fact]
@@ -422,6 +474,7 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
             //Act & Assert
             var exception = Assert.Throws<CacheAccessException>(() => _sut.EmptyExpired());
             Assert.Contains("error occured when accessing the cache", exception.Message);
+            cacheItem.Close();
         }
 
         [Fact]
@@ -435,6 +488,7 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
             //Act & Assert
             var exception = Assert.Throws<CacheAccessException>(() => _sut.EmptyExpired());
             Assert.NotNull(exception.InnerException);
+            cacheItem.Close();
         }
     }
 }

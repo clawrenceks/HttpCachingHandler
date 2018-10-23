@@ -15,7 +15,7 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
             var cacheLocationBase = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             var cacheId = Guid.NewGuid();
             var cacheLocation = Path.Combine(cacheLocationBase, cacheId.ToString());
-            
+
             while (Directory.Exists(cacheLocation))
             {
                 cacheId = Guid.NewGuid();
@@ -32,11 +32,6 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
         {
             key = UrlEncodeString(key);
 
-            if (Exists(key))
-            {
-                throw new InvalidOperationException($"An item with {nameof(key)} {key} already exists in the cache.");
-            }
-
             if (string.IsNullOrWhiteSpace(eTag))
             {
                 eTag = null;
@@ -52,14 +47,7 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
 
             try
             {
-                var cachedItem = File.Create(cachedItemPath);
-
-                if (cachedItem.CanWrite)
-                {
-                    cachedItem.Write(Encoding.ASCII.GetBytes(formattedResponse));
-                };
-
-                cachedItem.Close();
+                File.WriteAllBytes(cachedItemPath, Encoding.ASCII.GetBytes(formattedResponse));
             }
             catch (Exception ex)
             {
@@ -125,8 +113,8 @@ namespace Clawrenceks.HttpCachingHandler.IntegrationTests
                 throw new InvalidOperationException($"No item with {nameof(key)} {key} exists in the cache.");
             }
 
-            var cachedReponse = LoadCachedResponse(key);
-            return cachedReponse.Content;
+            var cachedResponse = LoadCachedResponse(key);
+            return cachedResponse.Content;
         }
 
         public string GetETag(string key)
