@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Src\Clawrenceks.HttpCachingHandler.Abstractions\Clawrenceks.HttpCachingHandler.Abstractions.csproj" />
-    <ProjectReference Include="..\Src\Clawrenceks.HttpCachingHandler\Clawrenceks.HttpCachingHandler.csproj" />
+    <ProjectReference Include="..\..\Src\Clawrenceks.HttpCachingHandler.Abstractions\Clawrenceks.HttpCachingHandler.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Src\Clawrenceks.HttpCachingHandler\Clawrenceks.HttpCachingHandler.csproj" />
   </ItemGroup>
 
   <ItemGroup>
